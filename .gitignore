@@ -159,4 +159,5 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+w6/data*
 # ---- End of file ----
