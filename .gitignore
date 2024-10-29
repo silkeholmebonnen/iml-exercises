@@ -159,4 +159,6 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+*.jpg
+*.png
 # ---- End of file ----
