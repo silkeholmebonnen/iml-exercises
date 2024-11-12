@@ -1,0 +1,1630 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+
+    <style>
+      @import "https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css";
+      @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css");
+
+      :root {
+        --primary: hsl(171, 100%, 41%);
+        --link: hsl(217, 71%, 53%);
+        --info: hsl(204, 86%, 53%);
+        --success: hsl(141, 53%, 53%);
+        --warning: hsl(48, 100%, 67%);
+        --danger: hsl(348, 100%, 61%);
+        --light: hsl(0, 0%, 96%);
+        --dark: hsl(0, 0%, 21%);
+        --white: hsl(0, 0%, 100%);
+        --black: hsl(0, 0%, 4%);
+
+        --sidebar-width: 300px;
+      }
+
+      figure {
+        margin-top: 20px;
+      }
+
+      .easy {
+        color: var(--success);
+      }
+
+      .medium {
+        color: var(--warning);
+      }
+      .hard {
+        color: var(--danger);
+      }
+
+      .is-lvl-easy {
+        background-color: var(--success) !important;
+      }
+
+      .is-lvl-medium {
+        background-color: var(--warning) !important;
+      }
+      .is-lvl-hard {
+        background-color: var(--danger) !important;
+      }
+
+      .editor {
+        height: 100px;
+        width: 500px;
+      }
+
+      pre {
+        border-radius: 10px;
+        margin-bottom: 10px;
+        margin-top: 10px;
+      }
+
+      .important {
+        color: red;
+      }
+
+      .optional {
+        color: blue;
+      }
+
+      .mandatory-bg {
+        background-color: red;
+      }
+
+      .regular-bg {
+        background-color: orange;
+      }
+
+      .optional-bg {
+        background-color: blue;
+      }
+
+      .color-info {
+        color: var(--success);
+      }
+
+      .color-tip {
+        color: var(--warning);
+      }
+
+      .color-important {
+        color: var(--danger);
+      }
+
+      .anchor {
+          display: block;
+          position: relative;
+          top: -250px;
+          visibility: hidden;
+      }
+
+      .sidebar {
+        width: var(--sidebar-width);
+        position: fixed;
+        height: 100%;
+        top: 56px;
+        overflow-y: auto;
+        bottom: 0;
+      }
+
+      /*.page-container {*/
+      /*  transition: 200ms;*/
+      /*}*/
+
+      .sidebar_active {
+        margin-left: var(--sidebar-width);
+      }
+
+      .task {
+        margin-top: 20px;
+      }
+
+      .m-item {
+          font-size: 0.9em;
+          margin-top: 0.1em;
+          margin-bottom: 0.1em;
+          padding-top: 0.2em !important;
+          padding-bottom: 0.2em !important;
+      }
+
+      .content .tag, .content .number {
+          display: inline;
+          padding: inherit;
+          font-size: inherit;
+          line-height: inherit;
+          text-align: inherit;
+          vertical-align: inherit;
+          border-radius: inherit;
+          font-weight: inherit;
+          white-space: inherit;
+          background: inherit;
+          margin: inherit;
+        }
+
+      [x-cloak] {
+          display: none !important;
+      }
+    </style>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.css"
+      integrity="sha384-bYdxxUwYipFNohQlHt0bjN/LCpueqWz13HufFEV1SUatKs1cm4L6fFgCi1jT643X"
+      crossorigin="anonymous"
+    />
+
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism-themes/1.9.0/prism-one-light.min.css" integrity="sha512-hS/3ZdmvOJPB/KZXZF9mUeMQuoNmo6BSiJHdUajzlhIs0CTBZMmJbtBkxMJAx7nm7IvigDv8N925UeuM0M96gg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+
+    
+
+    <!-- The loading of KaTeX is deferred to speed up page rendering -->
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/katex.min.js"
+      integrity="sha384-Qsn9KnoKISj6dI8g7p1HBlNpVx0I8p1SvlwOldgi3IorMle61nQy4zEahWYtljaz"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- To automatically render math in text elements, include the auto-render extension: -->
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/katex@0.16.2/dist/contrib/auto-render.min.js"
+      integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        renderMathInElement(document.body, {
+          // customised options
+          // • auto-render specific keys, e.g.:
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false },
+            { left: "\\(", right: "\\)", display: false },
+            { left: "\\[", right: "\\]", display: true },
+          ],
+          // • rendering keys, e.g.:
+          throwOnError: false,
+        });
+      });
+    </script>
+
+
+    <title>NN architectures</title>
+
+
+
+
+
+  </head>
+  <body x-data="{ sidebar_open: $persist(true), hide_sidebar: false }">
+    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation" x-data="{isOpen: false}">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="/">
+            <img src="/resources/logo@3x.png" height="28" width="28">
+        </a>
+
+        <a role="button" class="navbar-burger" :class="{'is-active': isOpen}" aria-label="menu" :aria-expanded="isOpen"
+           @click="isOpen = !isOpen" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+    </div>
+
+    <div id="navbarBasicExample" class="navbar-menu" :class="{'is-active': isOpen}">
+        <div class="navbar-start">
+
+            
+                <a class="navbar-item" @click="sidebar_open = !sidebar_open"><i class="bi bi-list"></i></a>
+            
+
+            <a href="/" class="navbar-item">
+                Home
+            </a>
+            
+                
+                    
+                        <div class="navbar-item has-dropdown is-hoverable">
+                            
+                                <a href="/01-about_the_course/index.html" class="navbar-link">
+                                    Course Guidelines
+                                </a>
+                                <div class="navbar-dropdown">
+                                    
+                                        
+                                            
+                                                <a href="/01-about_the_course/01-AboutTheCourse.html" class="navbar-item">
+                                                    About the course
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/01-about_the_course/02-PrerequisiteMaterial.html" class="navbar-item">
+                                                    Prerequite Material
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/01-about_the_course/03-References.html" class="navbar-item">
+                                                    References
+                                                </a>
+                                            
+                                        
+                                    
+                                </div>
+                            
+                        </div>
+
+                    
+                
+            
+                
+                    
+                        <div class="navbar-item has-dropdown is-hoverable">
+                            
+                                <a href="/02-python/index.html" class="navbar-link">
+                                    Python
+                                </a>
+                                <div class="navbar-dropdown">
+                                    
+                                        
+                                            
+                                                <a href="/02-python/01-about_jupyter.html" class="navbar-item">
+                                                    Jupyter Notebooks
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/02-python/02-python_intro.html" class="navbar-item">
+                                                    Python overview
+                                                </a>
+                                            
+                                        
+                                    
+                                </div>
+                            
+                        </div>
+
+                    
+                
+            
+                
+                    
+                        <div class="navbar-item has-dropdown is-hoverable">
+                            
+                                <a href="/03-exercises/index.html" class="navbar-link">
+                                    Exercises
+                                </a>
+                                <div class="navbar-dropdown">
+                                    
+                                        
+                                            
+                                                <a href="/03-exercises/W00/index.html" class="navbar-item">
+                                                    Before the semester start: Installation and exercise setup 
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/03-exercises/W01/index.html" class="navbar-item">
+                                                    Week 1: Introduction to Python and libraries
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/03-exercises/W02/index.html" class="navbar-item">
+                                                    Week 2: Vector representations
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/03-exercises/W03/index.html" class="navbar-item">
+                                                    Week 3: Linear Algebra
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/03-exercises/W04/index.html" class="navbar-item">
+                                                    Week 4: Linear Transformations
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/03-exercises/W05/index.html" class="navbar-item">
+                                                    Week 5: Models and least squares
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/03-exercises/W06/index.html" class="navbar-item">
+                                                    Week 6: Understanding data and uncertainty
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/03-exercises/W07/index.html" class="navbar-item">
+                                                    Week 7: Regularization and filtering
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/03-exercises/W08/index.html" class="navbar-item">
+                                                    Week 8: Classification
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/03-exercises/W09/index.html" class="navbar-item">
+                                                    Week 9: Evaluation
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/03-exercises/W10/index.html" class="navbar-item">
+                                                    Week 10: Dimensionality reduction
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/03-exercises/W11/index.html" class="navbar-item">
+                                                    Week 11: Clustering and Non-Linear Optimization
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/03-exercises/W12/index.html" class="navbar-item">
+                                                    Week 12: Neural Networks
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/03-exercises/W13/index.html" class="navbar-item">
+                                                    Week 13: Convolutional Neural Networks
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/03-exercises/W14/index.html" class="navbar-item">
+                                                    Week 14: Convolutional Neural Networks (CNN&#x27;s)
+                                                </a>
+                                            
+                                        
+                                    
+                                </div>
+                            
+                        </div>
+
+                    
+                
+            
+                
+                    
+                        <div class="navbar-item has-dropdown is-hoverable">
+                            
+                                <a href="/04-tutorials/index.html" class="navbar-link">
+                                    Tutorials
+                                </a>
+                                <div class="navbar-dropdown">
+                                    
+                                        
+                                            
+                                                <a href="/04-tutorials/01-data-basics.html" class="navbar-item">
+                                                    Week 1: Data analysis, manipulation and plotting
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/04-tutorials/02-linear-algebra.html" class="navbar-item">
+                                                    Week 2: Linear algebra
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/04-tutorials/03-transformations.html" class="navbar-item">
+                                                    Week 3: Transformations tutorial
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/04-tutorials/04-projection_least_sq.html" class="navbar-item">
+                                                    Week 4: Projection and Least Squares tutorial
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/04-tutorials/06/index.html" class="navbar-item">
+                                                    Week 6: Cross-validation and descriptive statistics tutorial
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/04-tutorials/07-filters.html" class="navbar-item">
+                                                    Week 7: Filtering tutorial
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/04-tutorials/11-GDregression_example.html" class="navbar-item">
+                                                    Week 11: Gradient Descent &#x2F; Ascent
+                                                </a>
+                                            
+                                        
+                                    
+                                </div>
+                            
+                        </div>
+
+                    
+                
+            
+                
+                    
+                        <div class="navbar-item has-dropdown is-hoverable">
+                            
+                                <a href="/05-inclass/index.html" class="navbar-link">
+                                    In-class Exercises
+                                </a>
+                                <div class="navbar-dropdown">
+                                    
+                                        
+                                            
+                                                <a href="/05-inclass/InClass1students.html" class="navbar-item">
+                                                    In-class 1
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/05-inclass/InClass2.html" class="navbar-item">
+                                                    In-class 2
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/05-inclass/Inclass3.html" class="navbar-item">
+                                                    In-class 3
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/05-inclass/inclass3_linefitting.html" class="navbar-item">
+                                                    In-class 3
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/05-inclass/inclass4.html" class="navbar-item">
+                                                    In-class 4
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/05-inclass/inclass7.html" class="navbar-item">
+                                                    In-class 7
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/05-inclass/inclass9.html" class="navbar-item">
+                                                    In-class 9
+                                                </a>
+                                            
+                                        
+                                    
+                                        
+                                            
+                                                <a href="/05-inclass/inclass_W10.html" class="navbar-item">
+                                                    In-class 10
+                                                </a>
+                                            
+                                        
+                                    
+                                </div>
+                            
+                        </div>
+
+                    
+                
+            
+                
+                    
+                        <div class="navbar-item has-dropdown is-hoverable">
+                            
+                                <a href="/dev_documentation.html" class="navbar-item">
+                                    Dev documentation
+                                </a>
+                            
+                        </div>
+
+                    
+                
+            
+
+            <a href="/explorer" class="navbar-item">
+                Explorer
+            </a>
+        </div>
+
+        <div class="navbar-end">
+            <a class="navbar-item" href="https:&#x2F;&#x2F;github.itu.dk&#x2F;IML&#x2F;iml_student2023">
+                <strong>GitHub</strong>
+                <span class="icon">
+                <i class="bi bi-github"></i>
+              </span>
+
+            </a>
+        </div>
+    </div>
+</nav>  <div class="sidebar p-2" x-show="sidebar_open">
+    <aside class="menu">
+        <p class="menu-label">
+            Document
+        </p>
+        
+            
+        
+            
+        
+            
+
+                    
+                        
+
+                                
+
+                        
+                    
+                        
+
+                                
+
+                        
+                    
+                        
+
+                                
+
+                        
+                    
+                        
+
+                                
+
+                        
+                    
+                        
+
+                                
+
+                        
+                    
+                        
+
+                                
+
+                        
+                    
+                        
+
+                                
+
+                        
+                    
+                        
+
+                                
+
+                        
+                    
+                        
+
+                                
+
+                        
+                    
+                        
+
+                                
+
+                        
+                    
+                        
+
+                                
+
+                        
+                    
+                        
+
+                                
+
+                        
+                    
+                        
+
+                                
+                                    <ul class="menu-list">
+                                        <li>
+                                            <a href="/03-exercises/W12/index.html" >Overview</a>
+                                        </li>
+                                        
+                                            
+                                                
+                                                    
+                                                        <li>
+
+                                                            <a href="/03-exercises/W12/01-introduction.html" class="">1. Neural Network Introduction </a>
+                                                        </li>
+                                                    
+                                                
+                                            
+                                                
+                                                    
+                                                        <li>
+
+                                                            <a href="/03-exercises/W12/02-nn.html" class="is-active">2. NN architectures </a>
+                                                        </li>
+                                                    
+                                                
+                                            
+                                                
+                                                    
+                                                        <li>
+
+                                                            <a href="/03-exercises/W12/03-tuning.html" class="">3. Tuning </a>
+                                                        </li>
+                                                    
+                                                
+                                            
+                                        
+                                    </ul>
+                                
+
+                        
+                    
+                        
+
+                                
+
+                        
+                    
+                        
+
+                                
+
+                        
+                    
+
+            
+        
+            
+        
+            
+        
+            
+        
+        <p class="menu-label">
+            Content
+        </p>
+        <ul class="menu-list">
+            
+
+                
+
+                    
+                            
+                                <li><a class="m-item" href="#ZIvVD5CfEeUA3JAZuAqIH">Neural network TensorBoard</a>
+                                    
+                                        
+                                        <ul>
+                                            
+                                                
+                                                    <li><a class="m-item" href="#setup11"><span class="tag"><i class="mr-1 bi bi-circle-fill easy"></i> Task 1</span>  Install TensorBoard</a></li>
+                                                
+                                            
+                                                
+                                                    <li><a class="m-item" href="#setup12"><span class="tag"><i class="mr-1 bi bi-circle-fill easy"></i> Task 2</span>  Launch TensorBoard</a></li>
+                                                
+                                            
+                                        </ul>
+                                    
+                                </li>
+                            
+                    
+                            
+                                <li><a class="m-item" href="#yj33mQL5KWTce3cYivqox">Modifying hyperparameters</a>
+                                    
+                                        
+                                        <ul>
+                                            
+                                                
+                                                    <li><a class="m-item" href="#UJo_0_RWNh4dfGmQPCz9K">Multilayer Perceptron</a>
+                                                        
+                                                            
+                                                            <ul>
+                                                                
+                                                                    
+                                                                        <li><a class="m-item" href="#MLP1"><span class="tag"><i class="mr-1 bi bi-circle-fill easy"></i> Task 3</span>  Training</a></li>
+                                                                    
+                                                                
+                                                                    
+                                                                        <li><a class="m-item" href="#MLP3"><span class="tag"><i class="mr-1 bi bi-circle-fill easy"></i> Task 4</span>  Evaluation</a></li>
+                                                                    
+                                                                
+                                                            </ul>
+                                                        
+                                                    </li>
+                                                
+                                            
+                                                
+                                                    <li><a class="m-item" href="#nFJD2S9uHV096CHgEEzDr">Convolutional Neural Network</a>
+                                                        
+                                                            
+                                                            <ul>
+                                                                
+                                                                    
+                                                                        <li><a class="m-item" href="#CNN1"><span class="tag"><i class="mr-1 bi bi-circle-fill easy"></i> Task 5</span>  Training</a></li>
+                                                                    
+                                                                
+                                                                    
+                                                                        <li><a class="m-item" href="#CNN2"><span class="tag"><i class="mr-1 bi bi-circle-fill easy"></i> Task 6</span>  Evaluation</a></li>
+                                                                    
+                                                                
+                                                            </ul>
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        </ul>
+                                    
+                                </li>
+                            
+                    
+                            
+                                <li><a class="m-item" href="#AX3aIQUeXDWfbTpzaBzdG">Comparing the models</a>
+                                    
+                                        
+                                        <ul>
+                                            
+                                                
+                                                    <li><a class="m-item" href="#CNN3"><span class="tag"><i class="mr-1 bi bi-circle-fill easy"></i> Task 7</span>  Evaluation</a></li>
+                                                
+                                            
+                                        </ul>
+                                    
+                                </li>
+                            
+                    
+                            
+                                <li><a class="m-item" href="#3WnbXlOtYLHO6eTFkO980">Modifying architectures</a>
+                                    
+                                        
+                                        <ul>
+                                            
+                                                
+                                                    <li><a class="m-item" href="#mLE-JRcVcEfeciJnD2Pvu">Multilayer Perceptron model</a>
+                                                        
+                                                            
+                                                            <ul>
+                                                                
+                                                                    
+                                                                        <li><a class="m-item" href="#modifications"><span class="tag"><i class="mr-1 bi bi-circle-fill medium"></i> Task 8</span>  Adding a hidden layer</a></li>
+                                                                    
+                                                                
+                                                            </ul>
+                                                        
+                                                    </li>
+                                                
+                                            
+                                                
+                                                    <li><a class="m-item" href="#sZGGgwHTEDluV1pm2VxiJ">Evaluate</a>
+                                                        
+                                                            
+                                                            <ul>
+                                                                
+                                                                    
+                                                                        <li><a class="m-item" href="#CNN2"><span class="tag"><i class="mr-1 bi bi-circle-fill easy"></i> Task 9</span>  Evaluation</a></li>
+                                                                    
+                                                                
+                                                            </ul>
+                                                        
+                                                    </li>
+                                                
+                                            
+                                        </ul>
+                                    
+                                </li>
+                            
+                    
+                            
+                                <li><a class="m-item" href="#Gxg87YyifHVne3_3APGcn">Convolutional Neural Network</a>
+                                    
+                                        
+                                        <ul>
+                                            
+                                                
+                                                    <li><a class="m-item" href="#modifications3"><span class="tag"><i class="mr-1 bi bi-circle-fill medium"></i> Task 10</span>  Adding a convolutional layer</a></li>
+                                                
+                                            
+                                                
+                                                    <li><a class="m-item" href="#modifications4"><span class="tag"><i class="mr-1 bi bi-circle-fill medium"></i> Task 11</span>  Adding a convolutional layer</a></li>
+                                                
+                                            
+                                        </ul>
+                                    
+                                </li>
+                            
+                    
+                            
+                                <li><a class="m-item" href="#mkU_RlCZCNKZp3M1T1PGG">Optional task</a>
+                                    
+                                        
+                                        <ul>
+                                            
+                                                
+                                                    <li><a class="m-item" href="#additional"><span class="tag"><i class="mr-1 bi bi-circle-fill hard"></i> Task 12</span>  Additional improvements</a></li>
+                                                
+                                            
+                                        </ul>
+                                    
+                                </li>
+                            
+                    
+                
+
+            
+        </ul>
+    </aside>
+</div>
+ 
+
+    <div
+      class="page-container sidebar_active"
+      :class="{ 'sidebar_active': !hide_sidebar && sidebar_open }"
+    >
+      <section class="section">
+        <div class="container is-max-desktop">
+          <div class="columns">
+            <div class="column is-full">
+              <div class="content is-clearfix mt-2">
+                
+
+
+
+
+
+
+
+<h1>Neural network architectures<a class="anchor" id="5QVSVxoC5ec6gMdO2-YgT"></a></h1>
+<p>In this exercise you will work with the MLP and the CNN for classification of the FashionMNIST dataset introduced in the previous exercise ( <a href="/03-exercises/W12/01-introduction.ipynb.html">week 12</a>
+ ). You will evaluate the performance of the models using the metrics also introduced in the previous exercise. </p><p>The exercise serves the purpose of you experimenting with modifying the MLP and CNN architectures, both in terms of hyperparameters and architecture. </p><p>The exercise is divided in three steps being:</p><ul><li>Neural network TensorBoard.</li><li>Modifying hyperparameters.<ul><li>MLP.</li><li>CNN.</li></ul></li><li>Modifying architectures.<ul><li>MLP.</li><li>CNN.</li></ul></li></ul><article class="message is-danger">
+  <div class="message-header">Keep in mind</div>
+  <div class="message-body">
+
+  <p>The main goal of this exercise is for you to experiment with different network architectures and hyperparameters of an NN, and examine the impact they have on the training and the result.  <strong>Notice that this easily can become a timesink make well-argued choices as endless options and combinations are available.</strong> Therefore, most of the code is already provided for you, leaving only augmentations to you. We highly encourage you to use this as an opportunity to get hands-on experience with the impact of the different customizing factors of an NN. Spend the time reasoning and reflecting on the results and relate it to the theory you have encountered up until now. </p>
+
+  </div>
+</article>
+<h2>Neural network TensorBoard<a class="anchor" id="ZIvVD5CfEeUA3JAZuAqIH"></a></h2>
+<p>This exercise introduce you to <a href="https:&#x2F;&#x2F;www.tensorflow.org&#x2F;tensorboard" alt="">TensorBoard</a>
+ as a tool for monitoring and visualizing the training process of NNs. You will use it throughout the exercise to evaluate the training of your models.</p><article class="message is-info">
+  <div class="message-header">Tensorboard</div>
+  <div class="message-body">
+
+  <p>Although TensorBoard was created for TensorFlow (Google's framework for neural networks), it can also be used for Pytorch.</p>
+
+  </div>
+</article>
+<p>The next part of the exercise will guide you step-by-step to install and start using TensorBoard.</p><article class="message task">
+    <a class="anchor" id="setup11"></a>
+    <div class="message-header">
+        <span>Task 1: Install TensorBoard</span>
+        <span class="has-text-right">
+          <i class="bi bi-code"></i>
+          
+          
+          
+          <i class="bi bi-stoplights easy"></i>
+          
+        </span>
+    </div>
+    <div class="message-body">
+        <p>In a terminal window execute:</p><article class="message is-info">
+  <div class="message-header">Info</div>
+  <div class="message-body">
+
+  <p>Installing TensorBoard requires some minutes, make sure you have the time and a stable internet connection.</p>
+
+  </div>
+</article>
+<ol start="1"><li><p>Activate the environment by opening a terminal and type <code>conda activate iml</code>
+ and hit <code>enter</code>
+.</p></li><li><p>Type <code>pip install torch torchvision</code>
+and hit <code>enter</code>
+.</p></li><li><p>Type <code>pip install --user tensorboard</code>
+and hit <code>enter</code>
+.</p></li><li><p>Type <code>pip install tensorflow</code>
+and hit <code>enter</code>
+.</p></li></ol>
+    </div>
+</article>
+<p>Run the following cell to import the libraries for this exercise.</p>
+    <div hidden id="cell_1411_in">from torch import optim
+from trainers import PyTorchTrainer
+from networks import *
+from torchvision import transforms
+from fashionmnist_utils.mnist_reader import load_mnist
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import os
+
+# Create the &#x27;models&#x27; folder
+os.makedirs(&quot;models&quot;, exist_ok=True)
+# Create the &#x27;runs&#x27; folder
+os.makedirs(&quot;runs&quot;, exist_ok=True)
+
+</div>
+
+    <pre class="content"><code class="language-python"  id="cell_1411_code">from torch import optim
+from trainers import PyTorchTrainer
+from networks import *
+from torchvision import transforms
+from fashionmnist_utils.mnist_reader import load_mnist
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import os
+
+# Create the 'models' folder
+os.makedirs("models", exist_ok=True)
+# Create the 'runs' folder
+os.makedirs("runs", exist_ok=True)</code></pre>
+<p>After installing TensorBoard, we now launch it for use.</p><article class="message task">
+    <a class="anchor" id="setup12"></a>
+    <div class="message-header">
+        <span>Task 2: Launch TensorBoard</span>
+        <span class="has-text-right">
+          <i class="bi bi-code"></i>
+          
+          
+          
+          <i class="bi bi-stoplights easy"></i>
+          
+        </span>
+    </div>
+    <div class="message-body">
+        <ol start="1"><li><p>Navigate to the exercise source folder <code>&#x2F;03-exercises&#x2F;W12</code>
+.</p></li><li><p>Start <code>tensorboard</code>
+ from the terminal by typing <code>tensorboard --logdir=runs</code>
+.</p></li><li><p>Click or copy the address specified in the terminal to open tensorboard in a browser.  <article class="message is-info">
+  <div class="message-header">Tensorborad interface</div>
+  <div class="message-body">
+
+  <p>The interface is shown in <a href="#tensorboard">Figure 1</a>. However, the display will not yet show any results, as no training has been done.</p>
+
+  </div>
+</article>
+</p></li><li><p>Keep the TensorBoard tab open throughout the exercise as your models will be visualized as they are trained.</p></li></ol>
+    </div>
+</article>
+<figure class="image" id="tensorboard">
+
+<img src="/resources/material&#x2F;W13&#x2F;tensorboard.PNG" class="figure-img img-fluid rounded" style="width:70%" />
+
+<figcaption class="figure-caption has-text-centered">Figure 1: Screenshot of the TensorBoard interface showing the validation.</figcaption>
+</figure>
+<h2>Modifying hyperparameters<a class="anchor" id="yj33mQL5KWTce3cYivqox"></a></h2>
+<p>This part of the exercise serves the purporse of introducing and experimenting with the hyperparameters of an NN such as the <em>Learning rate</em>, the <em>momentum</em> and the <em>batch size</em>. You will use TensorBoard to visualize the training process, and the introcduced metrics to evaluate the performance.</p><h3>Multilayer Perceptron<a class="anchor" id="UJo_0_RWNh4dfGmQPCz9K"></a></h3>
+<p>You will train and modify an MLP to classify the FashionMNIST dataset. The two functions defined below, <code>train_pytorch_network</code>
+ and <code>evaluateNN</code>
+ should be used for model training and visualizing the performance of the models throughout the exercise. </p><p>The function <code>train_pytorch_network</code>
+ takes an NN class as a parameter. Upon reviewing the file <code>networks.py</code>
+ in exercise <a href="/03-exercises/W12/01-introduction.ipynb.html">week 12</a>
+, you will observe that these classes are defined within. The function <code>evaluateNN</code>
+ takes a as parameter a dictionary containing a key-value pair of a name and a file path to the trained model. The function computes a confusion matrix as well as provides you with plots visualizing <em>Accuracy</em>, <em>Precision</em> and <em>Recall</em> comparing the values for each model trained.</p><article class="message task">
+    <a class="anchor" id="MLP1"></a>
+    <div class="message-header">
+        <span>Task 3: Training</span>
+        <span class="has-text-right">
+          <i class="bi bi-code"></i>
+          
+          <i class="bi bi-lightbulb-fill"></i>
+          
+          <i class="bi bi-stoplights easy"></i>
+          
+        </span>
+    </div>
+    <div class="message-body">
+        <ol start="1"><li>Revisit the <code>networks.py</code>
+ file and locate the class <code>MLPBasic()</code>
+. Examine the class to gain an overview of the network architecture.</li><li>Run the cell below to train the MLP. The cell will automatically save the trained model in the <code>models&#x2F;</code>
+ directory.</li></ol>
+    </div>
+</article>
+
+    <div hidden id="cell_1412_in">def train_pytorch_network(to_train):
+
+    transform = transforms.ToTensor() ## conversion from PIL image format to torch tensors.
+
+    network = to_train
+
+    trainerNetwork = PyTorchTrainer(
+        nn_module=network,
+        transform=transform,
+        optimizer=optim.SGD(network.parameters(), lr=1e-2, momentum=0.5),
+        batch_size=128,
+    ) 
+
+    print(&quot;training the network started&quot;)
+    trainerNetwork.train(10)
+    trainerNetwork.save()
+    print(&quot;training and saving the network ended&quot;)
+
+
+def evaluateNN(models):
+    # Evaluate each model (this may take a while if you have many models)
+    loggers = {k: v.evaluate() for k, v in models.items()}
+
+    classes = [&#x27;t-shirt&#x27;,&#x27;trouser&#x27;,&#x27;pullover&#x27;,&#x27;dress&#x27;,&#x27;coat&#x27;,&#x27;sandal&#x27;,&#x27;shirt&#x27;,&#x27;sneaker&#x27;,&#x27;bag&#x27;,&#x27;ankle boot&#x27;]
+
+    fig = plt.figure(figsize=(7, 7))
+    sns.heatmap(loggers[&#x27;MLP&#x27;][0].mat, annot=True, fmt=&#x27;.0f&#x27;, cbar=False, xticklabels=classes, yticklabels=classes, square=True)
+
+    acc = [l[0].accuracy for l in loggers.values()]
+    plt.figure(figsize=(10, 4))
+    sns.barplot(y=list(models.keys()), x=acc)
+
+    # Change .precision to .recall to change metric
+    ps = {k: v[0].precision for k, v in loggers.items()}
+    ps = {&#x27;class&#x27;: classes, **ps}
+
+    df = pd.DataFrame(ps)
+    df = df.melt(id_vars=&#x27;class&#x27;)
+
+    plt.figure(figsize=(10, 4))
+    sns.barplot(x=&#x27;class&#x27;, y=&#x27;value&#x27;, hue=&#x27;variable&#x27;, data=df)
+    plt.legend(loc=&#x27;lower right&#x27;)
+
+    # Choose model (use dict key)
+    p = loggers[&#x27;MLP&#x27;][1]
+
+    # Load test data
+    X_test, y_test = load_mnist(&#x27;FashionMNIST&#x2F;raw&#x27;, kind=&#x27;t10k&#x27;)
+
+    # Use display function from the top of the file
+    show_samples(X_test, y_test, 32, prediction=p, cols=8, sort=False, width_mul=2)
+    plt.tight_layout()
+
+
+</div>
+
+    <pre class="content"><code class="language-python"  id="cell_1412_code">def train_pytorch_network(to_train):
+
+    transform = transforms.ToTensor() ## conversion from PIL image format to torch tensors.
+
+    network = to_train
+
+    trainerNetwork = PyTorchTrainer(
+        nn_module=network,
+        transform=transform,
+        optimizer=optim.SGD(network.parameters(), lr=1e-2, momentum=0.5),
+        batch_size=128,
+    ) 
+
+    print("training the network started")
+    trainerNetwork.train(10)
+    trainerNetwork.save()
+    print("training and saving the network ended")
+
+
+def evaluateNN(models):
+    # Evaluate each model (this may take a while if you have many models)
+    loggers = {k: v.evaluate() for k, v in models.items()}
+
+    classes = ['t-shirt','trouser','pullover','dress','coat','sandal','shirt','sneaker','bag','ankle boot']
+
+    fig = plt.figure(figsize=(7, 7))
+    sns.heatmap(loggers['MLP'][0].mat, annot=True, fmt='.0f', cbar=False, xticklabels=classes, yticklabels=classes, square=True)
+
+    acc = [l[0].accuracy for l in loggers.values()]
+    plt.figure(figsize=(10, 4))
+    sns.barplot(y=list(models.keys()), x=acc)
+
+    # Change .precision to .recall to change metric
+    ps = {k: v[0].precision for k, v in loggers.items()}
+    ps = {'class': classes, **ps}
+
+    df = pd.DataFrame(ps)
+    df = df.melt(id_vars='class')
+
+    plt.figure(figsize=(10, 4))
+    sns.barplot(x='class', y='value', hue='variable', data=df)
+    plt.legend(loc='lower right')
+
+    # Choose model (use dict key)
+    p = loggers['MLP'][1]
+
+    # Load test data
+    X_test, y_test = load_mnist('FashionMNIST/raw', kind='t10k')
+
+    # Use display function from the top of the file
+    show_samples(X_test, y_test, 32, prediction=p, cols=8, sort=False, width_mul=2)
+    plt.tight_layout()</code></pre>
+
+    <div hidden id="cell_1413_in">train_pytorch_network(MLPBasic())
+
+</div>
+
+    <pre class="content"><code class="language-python"  id="cell_1413_code">train_pytorch_network(MLPBasic())</code></pre>
+<article class="message task">
+    <a class="anchor" id="MLP3"></a>
+    <div class="message-header">
+        <span>Task 4: Evaluation</span>
+        <span class="has-text-right">
+          <i class="bi bi-code"></i>
+          
+          <i class="bi bi-lightbulb-fill"></i>
+          
+          <i class="bi bi-stoplights easy"></i>
+          
+        </span>
+    </div>
+    <div class="message-body">
+        <ol start="1"><li><p>The evaluation of each model iteration are stored in the <code>runs</code>
+ directory. Upon running the code, the result from training the model will appear in TensorBoard. Use it to visualize the training process.  In TensorBoard:</p><ul><li>Navigate to the <strong>SCALARS</strong>  tab and inspect the graphs showing model accuracy and loss. What patterns or trends do you observe in the loss and accuracy graphs throughout training?</li><li>Navigate to the <strong>GRAPHS</strong> tab and inspect the model architecture. How do the connections between layers influence the flow of information in the model architecture?</li></ul></li><li><p>Experiment with the different variables affecting the training and result of the model.</p><ul><li>Modify training variables and train new model:<ul><li>Change the learning rate to 1e-3, and 1e-1. </li><li>Change the momentum to 0.7 and 0.9. </li><li>Set the batch size to 1 and 512. </li></ul></li><li>Fill the dictionary below with the paths of your trained models and visualize the performance by running the <code>evaluateNN()</code>
+ function.</li></ul><article class="message is-warning">
+  <div class="message-header">Hint</div>
+  <div class="message-body">
+
+  <p>The cell below contains examples to help you with the syntax. Look in the <code>.&#x2F;models</code>
+ folder to find the filenames of your trained models.</p>
+
+  </div>
+</article>
+</li></ol>
+    </div>
+</article>
+
+    <div hidden id="cell_1414_in">#Write yout reflections here...
+
+</div>
+
+    <pre class="content"><code class="language-python"  id="cell_1414_code">#Write yout reflections here...</code></pre>
+
+    <div hidden id="cell_1415_in">from models import *
+
+modelsMLP = {
+    &#x27;MLP&#x27;: PyTorchTrainer.load(&#x27;models&#x2F;MLPBasic-08-11--19-29-10.pkl&#x27;), # replace this with your own model
+    &#x27;MLP_lr_1e-3&#x27;: PyTorchTrainer.load(&#x27;models&#x2F;MLPBasic-08-06--14-41-19.pkl&#x27;), # replace this with your own model
+    #&#x27;MLP_lr_1e-1&#x27;: PyTorchTrainer.load(&#x27;models&#x2F;MLPBasic...&#x27;), # replace this with your own model
+    #&#x27;MLP_momentum_0.7&#x27;: PyTorchTrainer.load(&#x27;models&#x2F;MLPBasic...&#x27;), # replace this with your own model
+    #&#x27;MLP_momentum_0.9&#x27;: PyTorchTrainer.load(&#x27;models&#x2F;MLPBasic...&#x27;), # replace this with your own model
+    #&#x27;MLP_batch_1&#x27;: PyTorchTrainer.load(&#x27;models&#x2F;MLPBasic...&#x27;), # replace this with your own model
+    #&#x27;MLP_batch_512&#x27;: PyTorchTrainer.load(&#x27;models&#x2F;MLPBasic...&#x27;), # replace this with your own model
+    
+}
+
+evaluateNN(modelsMLP)
+
+</div>
+
+    <pre class="content"><code class="language-python"  id="cell_1415_code">from models import *
+
+modelsMLP = {
+    'MLP': PyTorchTrainer.load('models/MLPBasic-08-11--19-29-10.pkl'), # replace this with your own model
+    'MLP_lr_1e-3': PyTorchTrainer.load('models/MLPBasic-08-06--14-41-19.pkl'), # replace this with your own model
+    #'MLP_lr_1e-1': PyTorchTrainer.load('models/MLPBasic...'), # replace this with your own model
+    #'MLP_momentum_0.7': PyTorchTrainer.load('models/MLPBasic...'), # replace this with your own model
+    #'MLP_momentum_0.9': PyTorchTrainer.load('models/MLPBasic...'), # replace this with your own model
+    #'MLP_batch_1': PyTorchTrainer.load('models/MLPBasic...'), # replace this with your own model
+    #'MLP_batch_512': PyTorchTrainer.load('models/MLPBasic...'), # replace this with your own model
+    
+}
+
+evaluateNN(modelsMLP)</code></pre>
+<h3>Convolutional Neural Network<a class="anchor" id="nFJD2S9uHV096CHgEEzDr"></a></h3>
+<p>You will now turn your attention to CNNs performing the same tasks.</p><article class="message task">
+    <a class="anchor" id="CNN1"></a>
+    <div class="message-header">
+        <span>Task 5: Training</span>
+        <span class="has-text-right">
+          <i class="bi bi-code"></i>
+          
+          <i class="bi bi-lightbulb-fill"></i>
+          
+          <i class="bi bi-stoplights easy"></i>
+          
+        </span>
+    </div>
+    <div class="message-body">
+        <p>Call the <code>train_pytorch_network</code>
+ function:</p><ol start="1"><li>Locate the <code>CNNBasic</code>
+ model defined in <code>networks.py</code>
+. Read through it to get an overview of the network architecture.</li><li>Train the CNN by running function with <code>CNNBasic</code>
+ model as parameter in the cell below.</li></ol>
+    </div>
+</article>
+
+    <div hidden id="cell_1416_in">train_pytorch_network(CNNBasic())
+
+</div>
+
+    <pre class="content"><code class="language-python"  id="cell_1416_code">train_pytorch_network(CNNBasic())</code></pre>
+<article class="message task">
+    <a class="anchor" id="CNN2"></a>
+    <div class="message-header">
+        <span>Task 6: Evaluation</span>
+        <span class="has-text-right">
+          <i class="bi bi-code"></i>
+          
+          <i class="bi bi-lightbulb-fill"></i>
+          
+          <i class="bi bi-stoplights easy"></i>
+          
+        </span>
+    </div>
+    <div class="message-body">
+        <ol start="1"><li>The evaluation of each model iteration are stored in the <code>runs</code>
+ directory. Upon running the code, the result from training the model will appear in TensorBoard. Use it to visualize the training process.  In TensorBoard:<ul><li>Navigate to the <strong>SCALARS</strong>  tab and inspect the graphs showing model accuracy and loss. What patterns or trends do you observe in the loss and accuracy graphs throughout training?</li><li>Navigate to the <strong>GRAPHS</strong> tab and inspect the model architecture. How do the connections between layers influence the flow of information in the model architecture?</li></ul></li><li>Experiment with the different variables affecting the training and result of the model.<ul><li><p>Modify training variables and train new model:</p><ul><li>Change the learning rate to 1e-4, and 1e-5. </li><li>Change the momentum to 0.3 and 0.1. </li><li>Set the batch size to 256 and 1024. </li></ul></li><li><p>Fill the dictionary below with the paths of your trained models and visualize the performance by running the <code>evaluateNN()</code>
+ function.</p></li><li><p>Reflect on:</p><ul><li>How does the choice of learning rate influence the training times and classification performance?</li><li>Do the classification metrics indicate that an increase in momentum results in overfitting?</li><li>Does the choice of batch size influence training times and classification performance?</li></ul><article class="message is-warning">
+  <div class="message-header">Hint</div>
+  <div class="message-body">
+
+  <p>Incoorporate your knowledge about Gradient Decent from last weeks exercise ( <a href="/03-exercises/W11/04-optimization.ipynb.html">week 11</a>
+ ).</p>
+
+  </div>
+</article>
+</li></ul></li></ol>
+    </div>
+</article>
+
+    <div hidden id="cell_1417_in">#Write your reflections here...
+
+</div>
+
+    <pre class="content"><code class="language-python"  id="cell_1417_code">#Write your reflections here...</code></pre>
+
+    <div hidden id="cell_1418_in">modelsCNN = {
+    &#x27;CNN&#x27;: PyTorchTrainer.load(&#x27;models&#x2F;CNNBasic...&#x27;), # replace this with your own model
+    &#x27;CNN_lr_1e-4&#x27;: PyTorchTrainer.load(&#x27;models&#x2F;CNNBasic...&#x27;), # replace this with your own model
+    &#x27;CNN_lr_1e-5&#x27;: PyTorchTrainer.load(&#x27;models&#x2F;CNNBasic...&#x27;), # replace this with your own model
+    &#x27;CNN_momentum_0.3&#x27;: PyTorchTrainer.load(&#x27;models&#x2F;CNNBasic...&#x27;), # replace this with your own model
+    &#x27;CNN_momentum_0.1&#x27;: PyTorchTrainer.load(&#x27;models&#x2F;CNNBasic...&#x27;), # replace this with your own model
+    &#x27;CNN_batch_256&#x27;: PyTorchTrainer.load(&#x27;models&#x2F;CNNBasic...&#x27;), # replace this with your own model
+    &#x27;CNN_batch_1024&#x27;: PyTorchTrainer.load(&#x27;models&#x2F;CNNBasic...&#x27;), # replace this with your own model
+    
+}
+
+evaluateNN(modelsCNN)
+
+</div>
+
+    <pre class="content"><code class="language-python"  id="cell_1418_code">modelsCNN = {
+    'CNN': PyTorchTrainer.load('models/CNNBasic...'), # replace this with your own model
+    'CNN_lr_1e-4': PyTorchTrainer.load('models/CNNBasic...'), # replace this with your own model
+    'CNN_lr_1e-5': PyTorchTrainer.load('models/CNNBasic...'), # replace this with your own model
+    'CNN_momentum_0.3': PyTorchTrainer.load('models/CNNBasic...'), # replace this with your own model
+    'CNN_momentum_0.1': PyTorchTrainer.load('models/CNNBasic...'), # replace this with your own model
+    'CNN_batch_256': PyTorchTrainer.load('models/CNNBasic...'), # replace this with your own model
+    'CNN_batch_1024': PyTorchTrainer.load('models/CNNBasic...'), # replace this with your own model
+    
+}
+
+evaluateNN(modelsCNN)</code></pre>
+<h2>Comparing the models<a class="anchor" id="AX3aIQUeXDWfbTpzaBzdG"></a></h2>
+<article class="message task">
+    <a class="anchor" id="CNN3"></a>
+    <div class="message-header">
+        <span>Task 7: Evaluation</span>
+        <span class="has-text-right">
+          <i class="bi bi-code"></i>
+          
+          <i class="bi bi-lightbulb-fill"></i>
+          
+          <i class="bi bi-stoplights easy"></i>
+          
+        </span>
+    </div>
+    <div class="message-body">
+        <p>Compare the MLPBasic and CNNBasic architecture. We recommend you to compare the initial MLP and CNN but you are free to compare them with updated variables as you which, but reflect on your choice and the result. Compare them using the following steps:</p><ol start="1"><li><p>TensorBoard</p><ul><li>Inspect the TensorBoard with the models for comparison. How do they differen in their training process?</li></ul></li><li><p>Metrics</p><ul><li><p>Update the paths of the once desired to compare in the dictionary below and run the cell. </p></li><li><p>Examine the confusion matrix and compare the two models with respect to accuracy, precision and recall and use it to determine how well the models perform on the dataset. Why is this the case?</p></li><li><p>Reflect on the different metric result, why do the model peform differently across the metrics?</p></li></ul><p><article class="message is-warning">
+  <div class="message-header">Hint</div>
+  <div class="message-body">
+
+  <p>Use your reflections from week 12 introduction <a href="/03-exercises/W12/01-introduction.ipynb.html">task 3</a>
+.</p>
+
+  </div>
+</article>
+hint" </p><ul><li>Observe which classes the models has difficulty with. Use the <code>show_samples</code>
+ function to visualize target classes and predictions and explain what characterizes these classes.</li></ul></li></ol>
+    </div>
+</article>
+
+    <div hidden id="cell_1419_in">modelsMLPCNN = {
+    &#x27;MLP...&#x27;: PyTorchTrainer.load(&#x27;models&#x2F;MLPBasic...&#x27;), # replace this with your trained model
+    &#x27;CNN...&#x27;: PyTorchTrainer.load(&#x27;models&#x2F;CNNBasic...&#x27;), # replace this with your trained model
+    #Add more...
+}
+
+evaluateNN(modelsMLPCNN)
+
+</div>
+
+    <pre class="content"><code class="language-python"  id="cell_1419_code">modelsMLPCNN = {
+    'MLP...': PyTorchTrainer.load('models/MLPBasic...'), # replace this with your trained model
+    'CNN...': PyTorchTrainer.load('models/CNNBasic...'), # replace this with your trained model
+    #Add more...
+}
+
+evaluateNN(modelsMLPCNN)</code></pre>
+
+    <div hidden id="cell_1420_in">#Write your reflections here...
+
+</div>
+
+    <pre class="content"><code class="language-python"  id="cell_1420_code">#Write your reflections here...</code></pre>
+<h2>Modifying architectures<a class="anchor" id="3WnbXlOtYLHO6eTFkO980"></a></h2>
+<p>This part of the exercise serves the purporse of experimenting with the architecture of an NN such as <em>number of layers</em>, <em>number of perceptrons (nodes)</em> and <em>kernel size</em>. You will use TensorBoard to visualize the training process, and the introcduced metrics to evaluate the performance.</p><h3>Multilayer Perceptron model<a class="anchor" id="mLE-JRcVcEfeciJnD2Pvu"></a></h3>
+<p>The following exercise will add a hidden layer to the MLP model. Locate the class <code>MLP_modified()</code>
+ in the <code>networks.py</code>
+ file.</p><article class="message task">
+    <a class="anchor" id="modifications"></a>
+    <div class="message-header">
+        <span>Task 8: Adding a hidden layer</span>
+        <span class="has-text-right">
+          <i class="bi bi-code"></i>
+          
+          
+          
+          <i class="bi bi-stoplights medium"></i>
+          
+        </span>
+    </div>
+    <div class="message-body">
+        <ol start="1"><li>Examine the class to gain an overview of the network architecture. <em>Note that it is a copy of the MLPBasic() class.</em></li><li>Modify the architecture by adding a new hidden layer with 256 nodes, updating the constructor. Ensure that the number of input and output features match between the layers.</li><li>Update the <code>forward</code>
+ method to ensure this new hidden layer is used in the predictions. </li><li>Train the model by running the cell below.</li></ol>
+    </div>
+</article>
+
+    <div hidden id="cell_1421_in">train_pytorch_network(MLP_modified())
+
+</div>
+
+    <pre class="content"><code class="language-python"  id="cell_1421_code">train_pytorch_network(MLP_modified())</code></pre>
+<h3>Evaluate<a class="anchor" id="sZGGgwHTEDluV1pm2VxiJ"></a></h3>
+<p>Evaluate the modified MLP against the <code>MLPBasic()</code>
+ following the steps: </p><article class="message task">
+    <a class="anchor" id="CNN2"></a>
+    <div class="message-header">
+        <span>Task 9: Evaluation</span>
+        <span class="has-text-right">
+          <i class="bi bi-code"></i>
+          
+          <i class="bi bi-lightbulb-fill"></i>
+          
+          <i class="bi bi-stoplights easy"></i>
+          
+        </span>
+    </div>
+    <div class="message-body">
+        <ol start="1"><li><p>In TensorBoard:</p><ul><li>Include the trained <code>MLPBasic()</code>
+and the <code>MLPModified()</code>
+ in the graphs (leave out the rest).</li><li>Navigate to the <strong>SCALARS</strong>  tab and inspect the graphs showing model accuracy and loss. What patterns or trends do you observe in the loss and accuracy graphs throughout training?</li><li>Navigate to the <strong>GRAPHS</strong> tab and inspect the model architecture. How do the connections between layers influence the flow of information in the model architecture?</li></ul></li><li><p>Update the dictionary below with your trained models and run the cell. Compare the model perfomances based on the metrics. Describe and reason about their differences. </p></li><li><p>Change the number of nodes to 512 (adjust the rest of the layers) and rerun the cell above to train the new model. Include the new model in the dictionary, evaluate the model and compare it with the others.</p></li></ol>
+    </div>
+</article>
+
+    <div hidden id="cell_1422_in">modelsMLPModified = {
+    &#x27;MLP&#x27;: PyTorchTrainer.load(&#x27;models&#x2F;MLPBasic...&#x27;), # replace this with your own model
+    &#x27;MLP_modified&#x27;: PyTorchTrainer.load(&#x27;models&#x2F;MLPModified..&#x27;), # replace this with your own model
+    #&#x27;MLP_modified2&#x27;: PyTorchTrainer.load(&#x27;models&#x2F;MLPModified..&#x27;), # replace this with your own model
+    #Add more...
+}
+
+evaluateNN(modelsMLPModified)
+
+</div>
+
+    <pre class="content"><code class="language-python"  id="cell_1422_code">modelsMLPModified = {
+    'MLP': PyTorchTrainer.load('models/MLPBasic...'), # replace this with your own model
+    'MLP_modified': PyTorchTrainer.load('models/MLPModified..'), # replace this with your own model
+    #'MLP_modified2': PyTorchTrainer.load('models/MLPModified..'), # replace this with your own model
+    #Add more...
+}
+
+evaluateNN(modelsMLPModified)</code></pre>
+
+    <div hidden id="cell_1423_in">#Write your reflections here...
+
+</div>
+
+    <pre class="content"><code class="language-python"  id="cell_1423_code">#Write your reflections here...</code></pre>
+<h2>Convolutional Neural Network<a class="anchor" id="Gxg87YyifHVne3_3APGcn"></a></h2>
+<p>The following exercise will have you modify the architechture of the CNN. </p><article class="message is-warning">
+  <div class="message-header">Hint</div>
+  <div class="message-body">
+
+  <ul><li>Recall that the kernel size influences the size of the output image. Specifically, for kernel size $k$, the output has dimensions $w-(k-1) \times h-(k-1)$ where $w$ is the width and $h$ is the height of an image. Adding a convolutional layer is consequently a bit more tricky than a linear layer because the dimensions between the layers need to match. You will likely need to debug the model a few times to get it right, therefor we encourage you to carefully examine the structure of the network before modifying it.</li><li>Convolutional layers MAY be accompanied with a max pooling layer, but remember to use an activation function.</li><li>The <code>max_pool2d</code>
+ operation in the<code>forward</code>
+ function halves the image resolution. </li></ul>
+
+  </div>
+</article>
+<article class="message task">
+    <a class="anchor" id="modifications3"></a>
+    <div class="message-header">
+        <span>Task 10: Adding a convolutional layer</span>
+        <span class="has-text-right">
+          <i class="bi bi-code"></i>
+          
+          
+          
+          <i class="bi bi-stoplights medium"></i>
+          
+        </span>
+    </div>
+    <div class="message-body">
+        <ol start="1"><li>Locate the class <code>CNN_modified()</code>
+ in the <code>networks.py</code>
+ file.</li><li>Examine the class to gain an overview of the network architecture. <em>Note that it is a copy of the CNNBasic() class</em>.</li><li>Add a new <code>Conv2d</code>
+ layer to the <code>CNN_modified</code>
+ class by decreasing the kernel size of the existing first layer and add the new layer as the second layer.</li></ol><article class="message is-warning">
+  <div class="message-header">Hint</div>
+  <div class="message-body">
+
+  <p>Use <code>tensor.size</code>
+ to get the size of any tensor.</p>
+
+  </div>
+</article>
+<ol start="4"><li>Update the <code>forward</code>
+ method to ensure this new hidden layer is used in the predictions. </li><li>Train the model by running the cell below.</li></ol>
+    </div>
+</article>
+
+    <div hidden id="cell_1424_in">train_pytorch_network(CNN_modified())
+
+</div>
+
+    <pre class="content"><code class="language-python"  id="cell_1424_code">train_pytorch_network(CNN_modified())</code></pre>
+<p>Evaluate the modified CNN against the <code>CNNBasic()</code>
+ following the steps: </p><article class="message task">
+    <a class="anchor" id="modifications4"></a>
+    <div class="message-header">
+        <span>Task 11: Adding a convolutional layer</span>
+        <span class="has-text-right">
+          <i class="bi bi-code"></i>
+          
+          
+          
+          <i class="bi bi-stoplights medium"></i>
+          
+        </span>
+    </div>
+    <div class="message-body">
+        <ol start="1"><li><p>In TensorBoard:</p><ul><li>Include the trained <code>CNNBasic()</code>
+and the <code>CNNModified()</code>
+ in the graphs (leave out the rest).</li><li>Navigate to the <strong>SCALARS</strong>  tab and inspect the graphs showing model accuracy and loss. What patterns or trends do you observe in the loss and accuracy graphs throughout training?</li><li>Navigate to the <strong>GRAPHS</strong> tab and inspect the model architecture. How do the connections between layers influence the flow of information in the model architecture?</li></ul></li><li><p>Update the dictionary below with your trained models and run the cell. Compare the models perfomances and describe and reason about their differences.</p></li><li><p>Change the kernel size and the number of kernels to achieve the best performing model, while avoiding overfitting. Run the cell above to train the new model. Include the new model in the dictionary, evaluate the model and compare it with the others.</p></li></ol>
+    </div>
+</article>
+
+    <div hidden id="cell_1425_in">models = {
+    &#x27;CNN&#x27;: PyTorchTrainer.load(&#x27;models&#x2F;CNNBasic...&#x27;), # replace this with your own model
+    &#x27;CNN_modified&#x27;: PyTorchTrainer.load(&#x27;models&#x2F;CNN_modified...&#x27;), # replace this with your own model
+    #&#x27;CNN_modified2&#x27;: PyTorchTrainer.load(&#x27;models&#x2F;CNN_modified...&#x27;), # replace this with your own model
+    #Add more...
+}
+
+</div>
+
+    <pre class="content"><code class="language-python"  id="cell_1425_code">models = {
+    'CNN': PyTorchTrainer.load('models/CNNBasic...'), # replace this with your own model
+    'CNN_modified': PyTorchTrainer.load('models/CNN_modified...'), # replace this with your own model
+    #'CNN_modified2': PyTorchTrainer.load('models/CNN_modified...'), # replace this with your own model
+    #Add more...
+}</code></pre>
+
+    <div hidden id="cell_1426_in">#Write your reflections here...
+
+</div>
+
+    <pre class="content"><code class="language-python"  id="cell_1426_code">#Write your reflections here...</code></pre>
+<h2>Optional task<a class="anchor" id="mkU_RlCZCNKZp3M1T1PGG"></a></h2>
+<p>This exercise has briefly introduced you to some of the modifications you can do to improve performance of your model. While this was just a brief introduction many more alterations can be performed. However, as noted, this easily becomes a timesink. This next task is optional, it continues the introduction of possible alterations.</p><article class="message task">
+    <a class="anchor" id="additional"></a>
+    <div class="message-header">
+        <span>Task 12: Additional improvements <em>(optional)</em></span>
+        <span class="has-text-right">
+          <i class="bi bi-code"></i>
+          
+          
+          
+          <i class="bi bi-stoplights hard"></i>
+          
+        </span>
+    </div>
+    <div class="message-body">
+        <p>Change the activation functions, the number of hidden layers, and the training setup to achieve the best performing model. Notice, that a huge amount of time can be spent on fiddling with the models.</p>
+    </div>
+</article>
+
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script  src="https://cdn.jsdelivr.net/npm/@alpinejs/persist@3.x.x/dist/cdn.min.js"></script>
+    <script  src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+  <script src="/~~penguin/client.js" defer></script></body>
+</html>
