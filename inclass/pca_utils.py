@@ -456,6 +456,50 @@ def plot_pca_pairwise_scatter(
     # Display the plot
     plt.show()
         
-        
+def plot_pose_with_numbers(pose, 
+                           dataset_index=1, 
+                           figsize=(9, 9), 
+                           x_limits=(-0.1, 0.65), 
+                           y_limits=(1, -0.1), 
+                           label_offset_x=-0.005, 
+                           label_offset_y=-0.02, 
+                           fontsize=7, 
+                           label_color='blue', 
+                           title_prefix="Single Pose"):
+    if len(pose) != 50:
+        raise ValueError(f"Expected pose of length 50, but got {len(pose)}.")
 
+    # Set up the plot
+    plt.figure(figsize=figsize)
+    plt.ylim(*y_limits)      # Invert y-axis if needed
+    plt.xlim(*x_limits)     # Set x-axis limits
+
+    # Plot the pose using your existing function
+    plot_single_pose(pose)
+
+    # Extract x and y coordinates
+    x_coords = pose[::2]   # First 25 are x-coordinates
+    y_coords = pose[1::2]   # Next 25 are y-coordinates
+
+    # Annotate each joint with numbers 1-25 above each (x, y) pair
+    for i in range(25):
+        label_text = f"({2 * i + 1}, {2 * i + 2})"
+        plt.text(
+            x_coords[i] + label_offset_x,
+            y_coords[i] + label_offset_y,
+            label_text,
+            fontsize=fontsize,
+            ha='center',      # Horizontal alignment: center
+            va='top',         # Vertical alignment: top (labels above the point)
+            color=label_color
+        )
+
+    # Add titles and labels
+    plt.title(f"{title_prefix} with Numbered Joints")
+    plt.xlabel("X Coordinate")
+    plt.ylabel("Y Coordinate")
+    plt.grid(True)          # Optional: add grid lines for reference
+
+    # Display the plot
+    plt.show()
 
